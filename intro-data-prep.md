@@ -54,6 +54,13 @@ Install [R](https://www.r-project.org/) and [R Studio](https://www.rstudio.com/p
 
 ### 0.3 Other
 
+## 1.0 Introduction
+
+
+### CSVs with R 
+
+
+## 3.0 Data Preparation
 
 ### Pandas
 
@@ -68,7 +75,68 @@ import pandas as pd
 Pandas is based around two data types, the series and the dataframe. A series is a one-dimensional data type where each element is labelled. A dataframe is a two-dimensional, tabular data structure. The Pandas dataframe can store many different data types and each axis is labelled. 
 
 
+### 2.1 dplyr
 
+dplyr allows us to transform and summarize tabular data with rows and columns. It contains a set of functions that perform common data manipulation operations like filtering rows, selecting specific columns, re-ordering rows, adding new columns, and summarizing data.
+
+First we begin by loading in the needed packages:
+``` R
+library(dplyr)
+library(downloader)
+```
+
+Using the data available in [this](https://github.com/lesley2958/data-science-r/blob/master/msleep_ggplot2.csv) repo, we''ll load the data into R:
+
+``` R
+url <- "https://raw.githubusercontent.com/genomicsclass/dagdata/master/inst/extdata/msleep_ggplot2.csv"
+filename <- "msleep_ggplot2.csv"
+if (!file.exists(filename)) download(url,filename)
+msleep <- read.csv("msleep_ggplot2.csv")
+head(msleep)
+```
+
+#### 2.1.1 select()
+
+To demonstrate how the `select()` method works, we select the name and sleep_total columns.
+
+``` R
+sleepData <- select(msleep, name, sleep_total)
+head(sleepData)
+```
+
+To select all the columns except a specific column, you can use the subtraction sign:
+
+``` R
+head(select(msleep, -name))
+```
+
+You can also select a range of columns with a colon:
+
+``` R
+head(select(msleep, name:order))
+```
+
+#### 2.1.2 filter()
+
+Using the `filter()` method in dplyr we can select rows that meet a certain criterion, such as in the following:
+
+``` R
+filter(msleep, sleep_total >= 16)
+```
+There, we filter out the animals whose sleep total is less than 16 hours. If you want to expand the criteria, you can: 
+
+```R
+filter(msleep, sleep_total >= 16, bodywt >= 1)
+```
+
+#### 2.1.3 Functions
+
+`arrange()`: re-order or arrange rows <br>
+`filter()`: filter rows <br>
+`group_by()`: allows for group operations in the “split-apply-combine” concept <br>
+`mutate()`: create new columns <br>
+`select()`: select columns <br>
+`summarise()`: summarise values
 
 
 
