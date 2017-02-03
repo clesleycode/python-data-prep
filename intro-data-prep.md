@@ -54,6 +54,28 @@ Install [R](https://www.r-project.org/) and [R Studio](https://www.rstudio.com/p
 
 ### 0.3 Other
 
+### 0.4 Virtual Environment
+
+If you'd like to work in a virtual environment, you can set it up as follows: 
+```
+pip3 install virtualenv
+virtualenv your_env
+```
+And then launch it with: 
+```
+source your_env/bin/activate
+```
+
+To execute the visualizations in matplotlib, do the following:
+
+```
+cd ~/.matplotlib
+nano matplotlibrc
+```
+And then, write `backend: TkAgg` in the file. Now you should be set up with your virtual environment!
+
+Cool, now we're ready to start! 
+
 ## 1.0 Introduction
 
 
