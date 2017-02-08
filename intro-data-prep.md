@@ -10,33 +10,13 @@ Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958) and [ADI](ht
 	+ [0.2 R & R Studio](#02-r--r-studio)
 	+ [0.3 Other](#03-other)
 - [1.0 Background](#10-background)
-	+ [1.1 What is Data Science?](#11-what-is-data-science)
-		* [1.1.1 What do you mean by data?](#111-what-do-you-mean-by-data)
-	+ [1.2 Is data science the same as machine learning?](#12-is-data-science-the-same-as-machine-learning)
-	+ [1.3 Why is Data Science important?](#13-why-is-data-science-important)
-	+ [1.4 Data Roles](#14-data-roles)
-		* [1.4.1 Data Analysis](#141-data-analyst)
-		* [1.4.2 Data Engineer](#142-data-engineer)
-		* [1.4.3 Data Scientist](#143-data-scientist)
+
 - [2.0 Data Science Process](#20-data-science-process)
-	+ [2.1 What is a "Data Science" Problem?](#21-what-is-a-data-science-problem)
-	+ [2.2 ...So where do I begin?](#22-so-where-do-i-begin)
-	+ [2.3 Given Problem](#23-given-problem)
-		* [2.3.1 Open Data](#231-open-data)
-	+ [2.4 Given Data](#24-given-data)    
+    
 - [3.0 Important Concepts](#30-important-concepts)
-	+ [3.1 Machine Learning](#31-machine-learning)
-		* [3.1.1 Supervised Learning](#311-supervised-learning)
-		* [3.1.2 Unsupervised Learning](#312-unsupervised-learning)
-		* [3.1.3 Reinforcement Learning](#313-reinforcement-learning)
+
 - [4.0 Tackling a Data Problem](#40-tackling-a-data-problem)
-	+ [4.1 Data Preparation](#41-data-preparation)
-	+ [4.2 Data Cleaning](#42-data-cleaning)
-	+ [4.3 Data Analysis](#43-data-analysis)
-		* [4.4.1 Basics](#431-basics)
-		* [4.4.2 Time Series Analysis](#432-time-series-analysis)
-		* [4.4.3 Deep Learning](#433-deep-learning)
-		* [4.4.4 Natural Language Processing](#434-natural-language-processing)
+
 - [5.0 Resources](#50-resources)
 
 
@@ -54,6 +34,24 @@ Install [R](https://www.r-project.org/) and [R Studio](https://www.rstudio.com/p
 
 ### 0.3 Other
 
+We'll soon get into the difference between packages in R and modules in Python. For now, let's install the ones we'll need for this tutorial. Open up your terminal and enter the following commands to install the needed python modules: 
+
+```
+pip3 install 
+```
+
+Next, to install the R packages, cd into your workspace, and enter the following, very simple, command into your bash: 
+
+```
+R
+```
+
+This will prompt a session in R! From here, you can install any needed packages. For the sake of this tutorial, enter the following into your terminal R session:
+
+```
+install.packages("")
+```
+
 ### 0.4 Virtual Environment
 
 If you'd like to work in a virtual environment, you can set it up as follows: 
@@ -70,7 +68,7 @@ To execute the visualizations in matplotlib, do the following:
 
 ```
 cd ~/.matplotlib
-nano matplotlibrc
+vim matplotlibrc
 ```
 And then, write `backend: TkAgg` in the file. Now you should be set up with your virtual environment!
 
@@ -81,6 +79,20 @@ Cool, now we're ready to start!
 
 ### CSVs with R 
 
+for row in data_table.find_all("tr"):
+    cells = row.find_all("td")
+    # Ignore lines that don't have 3 cells of data because it is just spacing
+    if len(cells) == 3:
+        line = (str.strip(cells[0].text), convert_num(cells[2].text))
+        # Once we get to the total line we start getting the funding lines
+        if line[0] == "TOTAL":
+            funding = True
+            # We don't want to capture the total because we can calc it
+            continue
+        if funding:
+            funding_lines[line[0]].append(line[1])
+        else:
+            expense_lines[line[0]].append(line[1])
 
 ## 3.0 Data Preparation
 
@@ -102,6 +114,7 @@ Pandas is based around two data types, the series and the dataframe. A series is
 dplyr allows us to transform and summarize tabular data with rows and columns. It contains a set of functions that perform common data manipulation operations like filtering rows, selecting specific columns, re-ordering rows, adding new columns, and summarizing data.
 
 First we begin by loading in the needed packages:
+
 ``` R
 library(dplyr)
 library(downloader)
@@ -151,7 +164,36 @@ There, we filter out the animals whose sleep total is less than 16 hours. If you
 filter(msleep, sleep_total >= 16, bodywt >= 1)
 ```
 
-#### 2.1.3 Functions
+#### 2.1.3 Pipe Operator
+
+dplyr imports the pipe operator from another package, `magrittr`. This operator allows you to pipe the output from one function to the input of another function. Instead of nesting functions. 
+
+Recall: 
+
+``` R
+head(select(msleep, name, sleep_total))
+```
+
+Instead, you can rewrite this as: 
+
+``` R
+msleep %>% 
+    select(name, sleep_total) %>% 
+    head
+```
+
+This function becomes particularly useful later on. 
+
+#### 2.1.4 Arrange
+
+To re-order rows by a particular column, you can list the name of the column you want to arrange the rows by: 
+
+``` R
+msleep %>% arrange(order) %>% head
+```
+
+
+#### 2.1.5 Functions
 
 `arrange()`: re-order or arrange rows <br>
 `filter()`: filter rows <br>
@@ -159,7 +201,6 @@ filter(msleep, sleep_total >= 16, bodywt >= 1)
 `mutate()`: create new columns <br>
 `select()`: select columns <br>
 `summarise()`: summarise values
-
 
 
 
