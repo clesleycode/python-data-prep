@@ -189,6 +189,51 @@ msleep %>% arrange(order) %>% head
 `summarise()`: summarise values
 
 
+## 3.0 Extracting Zipfiles
+
+
+### 3.1 OS Module
+
+``` python
+import os
+```
+
+``` python
+cwd = os.getcwd()
+dir_path  = os.path.join(cwd, 'Example')
+```
+
+``` python
+if not os.path.exists(dir_path):
+    os.makedirs(dir_path)
+```
+
+``` python
+os.listdir(cwd)
+```
+
+
+### 3.2 ZipFile
+
+``` python
+import zipfile
+import os
+zip_name = 'example.zip'
+```
+
+``` python
+cwd = os.getcwd()
+zip_path= os.path.join(cwd, zip_name)
+```
+
+``` python
+with zipfile.ZipFile(zip_path, 'r') as z:
+	z.extractall(cwd)
+```
+
+``` python
+os.listdir(dir_path)
+```
 
 ## 5.0 Final Words
 
