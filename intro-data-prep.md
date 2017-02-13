@@ -279,45 +279,62 @@ msleep %>% arrange(order) %>% head
 
 ## 4.0 Extracting Zipfiles
 
+Oftentimes, you'll have to download a large number of files. They might come in the form of zipfiles. Instead of manually unzipping them, you can use Python to extract these files for you, using the `os` and `zipfile` modules. 
 
 ### 4.1 OS Module
+
+The `os` module provides us a portable way of using operating system dependent functionality. We'll begin exploring it's capabilities now:
 
 ``` python
 import os
 ```
+
+With the `os.getcwd()` method, we can get the current directory we're in. This is particularly useful when working with a large number of files in a certain folder. In this case, we'll use `os` to work with the zipfiles:
 
 ``` python
 cwd = os.getcwd()
 dir_path  = os.path.join(cwd, 'Example')
 ```
 
+With `os`, you can check to see if a certain directory exists. Here, if it doesn't exist, we create that folder, which we can do with the `os.makedirs()` function:
+
 ``` python
 if not os.path.exists(dir_path):
     os.makedirs(dir_path)
 ```
 
+Lastly, as we do with the `ls` command on the terminal, we can use `os.listdir()` to get the contents of whatever path we provide as an argument.
+
 ``` python
 os.listdir(cwd)
 ```
 
+From there, we can move onto working with zipfiles!
+
 
 ### 4.2 ZipFile
 
+The `zipfile` module is a powerful module that allows us to extract files from a zipped folder. First, we import the needed modules and assign the name of the zipfile we'll be extracting to a variable:
 ``` python
 import zipfile
 import os
 zip_name = 'example.zip'
 ```
 
+Next, we get the current directory path and join it with the zipfile name to get its exact path:
+
 ``` python
 cwd = os.getcwd()
-zip_path= os.path.join(cwd, zip_name)
+zip_path = os.path.join(cwd, zip_name)
 ```
 
+Next, we use the ZipFile class to change the file to a Zipfile object. With this object, we use the `ZipFile.extract()` function to extract all the contents:
 ``` python
 with zipfile.ZipFile(zip_path, 'r') as z:
 	z.extractall(cwd)
 ```
+
+And lastly, we can see what's in the zipfile with: 
 
 ``` python
 os.listdir(dir_path)
