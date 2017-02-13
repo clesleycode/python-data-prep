@@ -1,7 +1,7 @@
 Data Preparation with Python & R
 ==================
 
-Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958) and [ADI](https://adicu.com)
+Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958), [Byte Academy](byteacademy.co), and [ADI](https://adicu.com). 
 
 ## Table of Contents
 
@@ -11,16 +11,26 @@ Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958) and [ADI](ht
 	+ [0.3 Other](#03-other)
 	+ [0.4 Virtual Environment](#04-virtual-environment)
 - [1.0 Introduction](#10-introduction)
-- [2.0 DataFrames](#20-dataframes)
-	+ [2.1 Pandas](#21-pandas)
-	+ [2.2 dplyr](#22-dplyr)
-		* [2.2.1 Select](#221-select)
-		* [2.2.2 Filter](#222-filter)
-		* [2.2.3 Pipe Operator](#223-pipe-operator)
-		* [2.2.4 Arrange](#224-arrange)
-		* [2.2.5 Functions](#225-functions)
-- [5.0 Resources](#50-resources)
-
+	+ [1.1 Overview](#11-overview)
+	+ [1.2 Glossary](#12-glossary)
+- [2.0 Pandas](#20-pandas)
+	+ [2.1 Series](#21-series)
+	+ [2.2 DataFrames](#22-dataframes)
+		* [2.2.1 Apply](#221-apply)
+		* [2.2.2 Sorting](#222-sorting)
+- [3.0 dplyr](#30-dplyr)
+	+ [3.1 Select](#31-select)
+	+ [3.2 Filter](#32-filter)
+	+ [3.3 Pipe Operator](#33-pipe-operator)
+	+ [3.4 Arrange](#34-arrange)
+	+ [3.5 Functions](#35-functions)
+- [4.0 Extracting Zipfiles](#40-extracting-zipfiles)
+	+ [4.1 OS Module](#41-os-module)
+	+ [4.2 Zipfile](#42-zipfile)
+- [5.0 Data Merging](#50-data-merging)
+	+ [5.1 Merging on Index](#51-merging-on-index)
+- [6.0 Final Words](#50-final-words)
+	+ [6.2 Mini Courses](#62-mini-courses)
 
 ## 0.0 Setup
 
@@ -40,6 +50,8 @@ Let's install the modules we'll need for this tutorial. Open up your terminal an
 
 ```
 pip3 install zipfile
+pip3 install os
+pip3 install pandas
 ```
 
 Next, to install the R packages, cd into your workspace, and enter the following, very simple, command into your bash: 
@@ -51,7 +63,7 @@ R
 This will prompt a session in R! From here, you can install any needed packages. For the sake of this tutorial, enter the following into your terminal R session:
 
 ```
-install.packages("")
+install.packages("dplyr")
 ```
 
 ### 0.4 Virtual Environment
@@ -340,6 +352,70 @@ And lastly, we can see what's in the zipfile with:
 os.listdir(dir_path)
 ```
 
-## 5.0 Final Words
+## 5.0 Data Merging
 
-### 5.1 Resources
+Now we'll head into the data merging portion of Data Science. We'll begin by initializing two dataframes to work with: 
+
+``` python
+from pandas import DataFrame
+df1 = DataFrame({'key': ['b', 'b', 'a', 'c', 'a', 'a', 'b'], 'data1': range(7)})
+df2 = DataFrame({'key': ['a', 'b', 'd'], 'data2': range(3)})
+```
+
+This is an example of a many-to-one merge situation; the data in df1 has multiple rows labeled a and b, whereas df2 has only one row for each value in the key column. Calling merge with these objects we obtain:
+
+``` python
+pd.merge(df1, df2)
+```
+Note that I didn’t specify which column to join on. If not specified, merge uses the overlapping column names as the keys. It’s a good practice to specify explicitly, though:
+
+``` python
+pd.merge(df1, df2, on='key')
+```
+
+If the column names are different in each object, you can specify them separately:
+
+``` python
+df3 = DataFrame({'lkey': ['b', 'b', 'a', 'c', 'a', 'a', 'b'], 'data1': range(7)})
+```
+
+You probably noticed that the 'c' and 'd' values and associated data are missing from the result. By default merge does an 'inner' join; the keys in the result are the intersection. Other possible options are 'left', 'right', and 'outer'. The outer join takes the union of the keys, combining the effect of applying both left and right joins:
+
+``` python
+pd.merge(df1, df2, how='outer')
+```
+
+### 5.1 Merging on Index
+
+In some cases, the merge key or keys in a DataFrame will be found in its index. In this case, you can pass `left_index=True` or `right_index=True` (or both) to indicate that the index should be used as the merge key:
+
+``` python
+left1 = DataFrame({'key': ['a', 'b', 'a', 'a', 'b', 'c'], 'value': range(6)})
+right1 = DataFrame({'group_val': [3.5, 7]}, index=['a', 'b'])
+```
+
+Since the default merge method is to intersect the join keys, you can instead form the union of them with an outer join:
+
+``` python
+pd.merge(left1, right1, left_on='key', right_index=True, how='outer')
+```
+
+## 6.0 Final Words
+
+That wraps up the Data Preparation portion of this course. Next we'll go into Data Cleaning and Munging, where we deal with messy and inaccurate data.
+
+### 6.2 Mini Courses
+
+Learn about courses [here](www.byteacademy.co/all-courses/data-science-mini-courses/).
+
+[Python 101: Data Science Prep](https://www.eventbrite.com/e/python-101-data-science-prep-tickets-30980459388) <br>
+[Intro to Data Science & Stats with R](https://www.eventbrite.com/e/data-sci-109-intro-to-data-science-statistics-using-r-tickets-30908877284) <br>
+[Data Acquisition Using Python & R](https://www.eventbrite.com/e/data-sci-203-data-acquisition-using-python-r-tickets-30980705123) <br>
+[Data Visualization with Python](https://www.eventbrite.com/e/data-sci-201-data-visualization-with-python-tickets-30980827489) <br>
+[Fundamentals of Machine Learning and Regression Analysis](https://www.eventbrite.com/e/data-sci-209-fundamentals-of-machine-learning-and-regression-analysis-tickets-30980917759) <br>
+[Natural Language Processing with Data Science](https://www.eventbrite.com/e/data-sci-210-natural-language-processing-with-data-science-tickets-30981006023) <br>
+[Machine Learning with Data Science](https://www.eventbrite.com/e/data-sci-309-machine-learning-with-data-science-tickets-30981154467) <br>
+[Databases & Big Data](https://www.eventbrite.com/e/data-sci-303-databases-big-data-tickets-30981182551) <br>
+[Deep Learning with Data Science](https://www.eventbrite.com/e/data-sci-403-deep-learning-with-data-science-tickets-30981221668) <br>
+[Data Sci 500: Projects](https://www.eventbrite.com/e/data-sci-500-projects-tickets-30981330995)
+
