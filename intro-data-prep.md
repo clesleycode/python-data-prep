@@ -64,6 +64,7 @@ This will prompt a session in R! From here, you can install any needed packages.
 
 ```
 install.packages("dplyr")
+install.packages("downloader")
 ```
 
 ### 0.4 Virtual Environment
@@ -80,14 +81,6 @@ And then launch it with:
 source your_env/bin/activate
 ```
 
-To execute the visualizations in matplotlib, do the following:
-
-```
-cd ~/.matplotlib
-vim matplotlibrc
-```
-And then, write `backend: TkAgg` in the file. Now you should be set up with your virtual environment!
-
 Cool, now we're ready to start! 
 
 ## 1.0 Introduction
@@ -96,11 +89,11 @@ We've gone over Data Acquisition as of now, so we know how to <i>get</i> our dat
 
 ### 1.1 Overview
 
-<b> Data Acquisition: </b> Reading and writing with a variety of file formats and databases.
-<b> Preparation: </b> Cleaning, munging, combining, normalizing, reshaping, slicing and dicing, and transforming data for analysis.
-<b> Transformation: </b> Applying mathematical and statistical operations to groups of data sets to derive new data sets. For example, aggregating a large table by group variables.
-<b> Modeling and computation: </b> Connecting your data to statistical models, machine learning algorithms, or other computational tools
-<b> Presentation: </b> Creating interactive or static graphical visualizations or textual summaries
+<b> Data Acquisition: </b> Reading and writing with a variety of file formats and databases. <br>
+<b> Preparation: </b> Cleaning, munging, combining, normalizing, reshaping, slicing and dicing, and transforming data for analysis. <br>
+<b> Transformation: </b> Applying mathematical and statistical operations to groups of data sets to derive new data sets. For example, aggregating a large table by group variables. <br>
+<b> Modeling and computation: </b> Connecting your data to statistical models, machine learning algorithms, or other computational tools <br>
+<b> Presentation: </b> Creating interactive or static graphical visualizations or textual summaries <br>
 
 ### 1.2 Glossary
 
@@ -197,7 +190,7 @@ frame.sort_index()
 
 ## 3.0 dplyr
 
-Similar to Dplyr, dplyr allows us to transform and summarize tabular data with rows and columns. It contains a set of functions that perform common data manipulation operations like filtering rows, selecting specific columns, re-ordering rows, adding new columns, and summarizing data.
+Similar to pandas, dplyr allows us to transform and summarize tabular data with rows and columns. It contains a set of functions that perform common data manipulation operations like filtering rows, selecting specific columns, re-ordering rows, adding new columns, and summarizing data.
 
 First we begin by loading in the needed packages:
 
