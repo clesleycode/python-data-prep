@@ -153,7 +153,7 @@ This gets us:
 2  3.6    Ohio  2002
 3  2.4  Nevada  2001
 4  2.9  Nevada  2002
-
+```
 You can also specify the sequence of columns by:
 
 ``` python
@@ -187,6 +187,104 @@ To sort lexicographically by row or column index, use the sort_index method, whi
 ``` python
 frame.sort_index()
 ```
+
+Naive Bayes works on Bayes Theorem of probability to predict the class of a given data point. Naive Bayes is extremely fast compared to other classification algorithms and works with an assumption of independence among predictors. 
+
+The Naive Bayes model is easy to build and particularly useful for very large data sets. Along with simplicity, Naive Bayes is known to outperform even highly sophisticated classification methods.
+
+
+### 2.3 Challenge
+
+Recall Bayes Theorem, which provides a way of calculating the posterior probability. Its formula is as follows:
+
+![alt text](https://github.com/ByteAcademyCo/stats-programmers/blob/master/bayes.png?raw=true "Logo Title Text 1")
+
+Let's go through an example of how the Naive Bayes Algorithm works using `pandas`. We'll go through a classification problem that determines whether a sports team will play or not based on the weather. 
+
+Let's load the module data:
+
+``` python
+import pandas as pd
+f1 = pd.read_csv("./weather.csv")
+```
+
+#### 2.3.1 Frequency Table
+
+The first actual step of this process is converting the dataset into a frequency table. Using the `groupby()` function, we get the frequencies:
+
+``` python
+df = f1.groupby(['Weather','Play']).size()
+```
+
+Now let's split the frequencies by weather and yes/no. Let's start with the three weather frequencies:
+
+``` python
+df2 = f1.groupby('Weather').count()
+```
+
+Now let's get the frequencies of yes and no:
+
+``` python
+df1 = f1.groupby('Play').count()
+```
+
+#### 2.3.2 Likelihood Table
+
+
+Next, you would create a likelihood table by finding the probabilites of each weather condition and yes/no. This will require that we add a new column that takes the play frequency and divides it by the total data occurances. 
+
+
+``` python
+df1['Likelihood'] = df1['Weather']/len(f1)
+df2['Likelihood'] = df2['Play']/len(f1)
+```
+
+This gets us a dataframe that looks like:
+
+```
+          Play  Likelihood
+Weather                   
+Overcast     4    0.285714
+Rainy        5    0.357143
+Sunny        5    0.357143
+```
+
+Now, we're able to use the Naive Bayesian equation to calculate the posterior probability for each class. The highest posterior probability is the outcome of prediction.
+
+#### 2.3.1 Calculation
+
+So now we need a question. Let's propose the following: "Players will play if the weather is sunny. Is this true?"
+
+From this question, we can construct Bayes Theorem. So what's our P(A|B)? P(Yes|Sunny), which gives us:
+
+P(Yes|Sunny) = (P(Sunny|Yes)*P(Yes))/P(Sunny)
+
+Based off the likelihood tables we created, we just grab P(Sunny) and P(Yes). 
+
+``` python
+ps = df2['Likelihood']['Sunny']
+py = df1['Likelihood']['Yes']
+```
+
+That leaves us with P(Sunny|Yes). This is the probability that the weather is sunny given that the players played that day. In `df`, we see that the total number of `yes` days under `sunny` is 3. We take this number and divide it by the total number of `yes` days, which we can get from `df`. 
+
+``` python
+psy = df['Sunny']['Yes']/df1['Weather']['Yes']
+```
+
+Now, we just have to plug these variables into bayes theorem: 
+
+``` python
+p = (psy*py)/ps
+```
+
+And we get:
+
+```
+0.59999999999999998
+```
+
+That means the answer to our original question is yes!
 
 ## 3.0 dplyr
 
