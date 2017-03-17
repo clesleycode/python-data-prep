@@ -1,8 +1,0 @@
-Intro to Data Acquisition
-
-Day 2, 6:00pm-9:00pm:
-	Sections 1.0 - 5.0:
-		- DataFrames
-		- Pandas & Dplyr
-		- Zip Files
-
