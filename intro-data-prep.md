@@ -193,49 +193,7 @@ Naive Bayes works on Bayes Theorem of probability to predict the class of a give
 The Naive Bayes model is easy to build and particularly useful for very large data sets. Along with simplicity, Naive Bayes is known to outperform even highly sophisticated classification methods.
 
 
-#### 2.2.3 Merging
-
-If you encounter two different datasets that contain the same type of information, you might consider merging them for your analyses. This is yet another functionality built into `pandas`. 
-
-Let's go through an example containing Game of Thrones data on each house and their associated region. `d1` contains 5 of the samples and `d2` contains 2 of them: 
-
-``` python
-d1 = pd.read_csv("./names_original.csv")
-d2 = pd.read_csv("./names_add.csv")
-```
-
-Instead of working with two separate datasets, it's much easier to simply merge, so we do this with the `concat()` function:
-
-``` python
-result = pd.concat([d1,d2])
-```
-
-Now, you might be asking what will happen if one of the datasets has more columns than other - will they still be allowed to merge? Let's try this example with another dataset:
-
-``` python
-d3 = pd.read_csv("./names_extra.csv")
-```
-
-If we use the same `concat()` function, we get:
-
-``` python
-result1 = pd.concat([d1, d3])
-```
-
-Notice the `NaN` values - these are undefined values indicating there wasn't any data to be displayed. `pandas` will simply fill in the missing data for each sample where it's unavailable:  
-
-```
-  First Name  Last Name                   Major
-0     Lesley    Cordero                     NaN
-1       Ojas      Sathe                     NaN
-2      Helen       Chen                     NaN
-3        Eli   Epperson                     NaN
-4      Jacob  Greenberg                     NaN
-0     Martin      Perez  Mechanical Engineering
-1      Menna    Elsayed               Sociology
-```
-
-#### 2.2.4 Indexing
+#### 2.2.3 Indexing
 
 Given the previous dataframe we created, if we try to access data by its index, we get multiple results, like this: 
 
@@ -506,51 +464,74 @@ os.listdir(dir_path)
 
 ## 5.0 Data Merging
 
-Now we'll head into the data merging portion of Data Science. We'll begin by initializing two dataframes to work with: 
+If you encounter two different datasets that contain the same type of information, you might consider merging them for your analyses. This is yet another functionality built into `pandas`. 
+
+Let's go through an example containing student data. `d1` contains 5 of the samples and `d2` contains 2 of them: 
 
 ``` python
-from pandas import DataFrame
-df1 = DataFrame({'key': ['b', 'b', 'a', 'c', 'a', 'a', 'b'], 'data1': range(7)})
-df2 = DataFrame({'key': ['a', 'b', 'd'], 'data2': range(3)})
+d1 = pd.read_csv("./names_original.csv")
+d2 = pd.read_csv("./names_add.csv")
 ```
 
-This is an example of a many-to-one merge situation; the data in df1 has multiple rows labeled a and b, whereas df2 has only one row for each value in the key column. Calling merge with these objects we obtain:
+### 5.1 Concatenation 
+
+Instead of working with two separate datasets, it's much easier to simply merge, so we do this with the `concat()` function:
 
 ``` python
-pd.merge(df1, df2)
+result = pd.concat([d1,d2])
 ```
-Note that I didn’t specify which column to join on. If not specified, merge uses the overlapping column names as the keys. It’s a good practice to specify explicitly, though:
+
+Now, you might be asking what will happen if one of the datasets has more columns than other - will they still be allowed to merge? Let's try this example with another dataset:
 
 ``` python
-pd.merge(df1, df2, on='key')
+d3 = pd.read_csv("./names_extra.csv")
 ```
 
-If the column names are different in each object, you can specify them separately:
+If we use the same `concat()` function, we get:
 
 ``` python
-df3 = DataFrame({'lkey': ['b', 'b', 'a', 'c', 'a', 'a', 'b'], 'data1': range(7)})
+result1 = pd.concat([d1, d3])
 ```
 
-You probably noticed that the 'c' and 'd' values and associated data are missing from the result. By default merge does an 'inner' join; the keys in the result are the intersection. Other possible options are 'left', 'right', and 'outer'. The outer join takes the union of the keys, combining the effect of applying both left and right joins:
+Notice the `NaN` values - these are undefined values indicating there wasn't any data to be displayed. `pandas` will simply fill in the missing data for each sample where it's unavailable:  
+
+```
+  First Name  Last Name                   Major
+0     Lesley    Cordero                     NaN
+1       Ojas      Sathe                     NaN
+2      Helen       Chen                     NaN
+3        Eli   Epperson                     NaN
+4      Jacob  Greenberg                     NaN
+0     Martin      Perez  Mechanical Engineering
+1      Menna    Elsayed               Sociology
+```
+
+### 5.2 Merging
+
+Now, how do we merge two datasets with differing columns? Well, let's take a look of our datasets:
 
 ``` python
-pd.merge(df1, df2, how='outer')
+h1 = pd.read_csv("./housing.csv")
+h2 = pd.read_csv("./dorms.csv")
 ```
 
-### 5.1 Merging on Index
-
-In some cases, the merge key or keys in a DataFrame will be found in its index. In this case, you can pass `left_index=True` or `right_index=True` (or both) to indicate that the index should be used as the merge key:
+With the `merge()` function in pandas, we can specify which column to merge on and what kind of join to specify. By default merge does an 'inner' join, but here we set it to a left join:
 
 ``` python
-left1 = DataFrame({'key': ['a', 'b', 'a', 'a', 'b', 'c'], 'value': range(6)})
-right1 = DataFrame({'group_val': [3.5, 7]}, index=['a', 'b'])
+house = pd.merge(h1, h2, on="Dorm", how="left")
+```
+This gets us: 
+``` 
+          Dorm            Name Street    Cost
+0  East Campus      Helen Chen  116th  11,000
+1     Broadway   Danielle Jing  114th    9000
+2      Shapiro    Craig Rhodes  115th    9500
+3         Watt  Lesley Cordero  113th   10500
+4  East Campus    Martin Perez  116th  11,000
+5     Broadway   Menna Elsayed  114th    9000
+6      Wallach   Will Essilfie  114th    9500
 ```
 
-Since the default merge method is to intersect the join keys, you can instead form the union of them with an outer join:
-
-``` python
-pd.merge(left1, right1, left_on='key', right_index=True, how='outer')
-```
 
 ## 6.0 Final Words
 
