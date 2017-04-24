@@ -319,11 +319,29 @@ library(downloader)
 Using the data available in [this](https://github.com/lesley2958/data-science-r/blob/master/msleep_ggplot2.csv) repo, we''ll load the data into R:
 
 ``` R
-url <- "https://raw.githubusercontent.com/genomicsclass/dagdata/master/inst/extdata/msleep_ggplot2.csv"
-filename <- "msleep_ggplot2.csv"
-if (!file.exists(filename)) download(url,filename)
-msleep <- read.csv("msleep_ggplot2.csv")
-head(msleep)
+url <- "https://raw.githubusercontent.com/genomicsclass/dagdata/master/inst/extdata/msleep_ggplot2.csv" 
+filename <- "msleep_ggplot2.csv" 
+download(url, filename) # downloads file into local
+msleep <- read.csv("msleep_ggplot2.csv") # reads the file
+head(msleep) # outputs 6 rows
+```
+
+Which gets us the following output:
+```
+                        name      genus  vore        order conservation
+1                    Cheetah   Acinonyx carni    Carnivora           lc
+2                 Owl monkey      Aotus  omni     Primates         <NA>
+3            Mountain beaver Aplodontia herbi     Rodentia           nt
+4 Greater short-tailed shrew    Blarina  omni Soricomorpha           lc
+5                        Cow        Bos herbi Artiodactyla domesticated
+6           Three-toed sloth   Bradypus herbi       Pilosa         <NA>
+  sleep_total sleep_rem sleep_cycle awake brainwt  bodywt
+1        12.1        NA          NA  11.9      NA  50.000
+2        17.0       1.8          NA   7.0 0.01550   0.480
+3        14.4       2.4          NA   9.6      NA   1.350
+4        14.9       2.3   0.1333333   9.1 0.00029   0.019
+5         4.0       0.7   0.6666667  20.0 0.42300 600.000
+6        14.4       2.2   0.7666667   9.6      NA   3.850
 ```
 
 ### 3.1 Select
@@ -347,7 +365,7 @@ You can also select a range of columns with a colon:
 head(select(msleep, name:order))
 ```
 
-#### 3.2 Filter
+### 3.2 Filter
 
 Using the `filter()` method in dplyr we can select rows that meet a certain criterion, such as in the following:
 
@@ -360,7 +378,7 @@ There, we filter out the animals whose sleep total is less than 16 hours. If you
 filter(msleep, sleep_total >= 16, bodywt >= 1)
 ```
 
-#### 3.3 Pipe Operator
+### 3.3 Pipe Operator
 
 dplyr imports the pipe operator from another package, `magrittr`. This operator allows you to pipe the output from one function to the input of another function. Instead of nesting functions. 
 
@@ -380,6 +398,7 @@ msleep %>%
 
 This function becomes particularly useful later on. 
 
+
 ### 3.4 Arrange
 
 To re-order rows by a particular column, you can list the name of the column you want to arrange the rows by: 
@@ -388,16 +407,120 @@ To re-order rows by a particular column, you can list the name of the column you
 msleep %>% arrange(order) %>% head
 ```
 
+This outputs the data in alphabetical order:
 
-### 3.5 Functions
+```
+      name     genus  vore        order conservation sleep_total sleep_rem
+1   Tenrec    Tenrec  omni Afrosoricida         <NA>        15.6       2.3
+2      Cow       Bos herbi Artiodactyla domesticated         4.0       0.7
+3 Roe deer Capreolus herbi Artiodactyla           lc         3.0        NA
+4     Goat     Capri herbi Artiodactyla           lc         5.3       0.6
+5  Giraffe   Giraffa herbi Artiodactyla           cd         1.9       0.4
+6    Sheep      Ovis herbi Artiodactyla domesticated         3.8       0.6
+  sleep_cycle awake brainwt  bodywt
+1          NA   8.4  0.0026   0.900
+2   0.6666667  20.0  0.4230 600.000
+3          NA  21.0  0.0982  14.800
+4          NA  18.7  0.1150  33.500
+5          NA  22.1      NA 899.995
+6          NA  20.2  0.1750  55.500
+```
 
-`arrange()`: re-order or arrange rows <br>
-`filter()`: filter rows <br>
-`group_by()`: allows for group operations in the “split-apply-combine” concept <br>
-`mutate()`: create new columns <br>
-`select()`: select columns <br>
-`summarise()`: summarise values
+### 3.5 Mutate
 
+The `mutate()` function allows us to add new columns to the data frame. In this example, we'll create a new column called `rem_proportion` which is the ratio of rem sleep to total amount of sleep.
+
+``` R
+msleep %>% 
+    mutate(rem_proportion = sleep_rem / sleep_total) %>%
+    head
+```
+
+This results in: 
+
+```
+                        name      genus  vore        order conservation
+1                    Cheetah   Acinonyx carni    Carnivora           lc
+2                 Owl monkey      Aotus  omni     Primates         <NA>
+3            Mountain beaver Aplodontia herbi     Rodentia           nt
+4 Greater short-tailed shrew    Blarina  omni Soricomorpha           lc
+5                        Cow        Bos herbi Artiodactyla domesticated
+6           Three-toed sloth   Bradypus herbi       Pilosa         <NA>
+  sleep_total sleep_rem sleep_cycle awake brainwt  bodywt rem_proportion
+1        12.1        NA          NA  11.9      NA  50.000             NA
+2        17.0       1.8          NA   7.0 0.01550   0.480      0.1058824
+3        14.4       2.4          NA   9.6      NA   1.350      0.1666667
+4        14.9       2.3   0.1333333   9.1 0.00029   0.019      0.1543624
+5         4.0       0.7   0.6666667  20.0 0.42300 600.000      0.1750000
+6        14.4       2.2   0.7666667   9.6      NA   3.850      0.1527778
+```
+
+### 3.6 Summaries
+
+The `summarise()` function creates summary statistics by inputting the column name as a parameter. As an example, to compute the average number of hours of sleep, apply the mean() function to the column `sleep_total` and call the summary value `avg_sleep`. The syntax for this is as follows:
+
+``` R
+msleep %>% 
+    summarise(avg_sleep = mean(sleep_total))
+```
+And we learn that the average sleep is `10.43` hours:
+```
+  avg_sleep
+1  10.43373
+```
+
+The `summarise()` function can take multiple parameters to output multiple summary statistics:
+``` R
+msleep %>% 
+    summarise(avg_sleep = mean(sleep_total), 
+              min_sleep = min(sleep_total),
+              max_sleep = max(sleep_total),
+              total = n())
+```
+
+Notice we now have 4 summary statistics!
+```
+  avg_sleep min_sleep max_sleep total
+1  10.43373       1.9      19.9    83
+```
+
+### 3.7 Group_by
+
+Each order of animals contains multiple rows. If we want to get summary statistics for each order type, we can combine the summarize statistics from the previous section with the `group_by()` function. 
+
+``` R
+msleep %>% 
+    group_by(order) %>%
+    summarise(avg_sleep = mean(sleep_total), 
+              min_sleep = min(sleep_total), 
+              max_sleep = max(sleep_total),
+              total = n())
+```
+
+As an output, we get the set of orders with their respective summary statistics:
+```
+             order avg_sleep min_sleep max_sleep total
+            <fctr>     <dbl>     <dbl>     <dbl> <int>
+1     Afrosoricida 15.600000      15.6      15.6     1
+2     Artiodactyla  4.516667       1.9       9.1     6
+3        Carnivora 10.116667       3.5      15.8    12
+4          Cetacea  4.500000       2.7       5.6     3
+5       Chiroptera 19.800000      19.7      19.9     2
+6        Cingulata 17.750000      17.4      18.1     2
+7  Didelphimorphia 18.700000      18.0      19.4     2
+8    Diprotodontia 12.400000      11.1      13.7     2
+9   Erinaceomorpha 10.200000      10.1      10.3     2
+10      Hyracoidea  5.666667       5.3       6.3     3
+11      Lagomorpha  8.400000       8.4       8.4     1
+12     Monotremata  8.600000       8.6       8.6     1
+13  Perissodactyla  3.466667       2.9       4.4     3
+14          Pilosa 14.400000      14.4      14.4     1
+15        Primates 10.500000       8.0      17.0    12
+16     Proboscidea  3.600000       3.3       3.9     2
+17        Rodentia 12.468182       7.0      16.6    22
+18      Scandentia  8.900000       8.9       8.9     1
+19    Soricomorpha 11.100000       8.4      14.9     5
+```
 
 ## 4.0 Extracting Zipfiles
 
