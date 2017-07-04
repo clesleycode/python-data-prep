@@ -192,27 +192,7 @@ Naive Bayes works on Bayes Theorem of probability to predict the class of a give
 
 The Naive Bayes model is easy to build and particularly useful for very large data sets. Along with simplicity, Naive Bayes is known to outperform even highly sophisticated classification methods.
 
-
-#### 2.2.3 Indexing
-
-Given the previous dataframe we created, if we try to access data by its index, we get multiple results, like this: 
-
-``` python
-result1.ix[0]
-```
-```
-  First Name Last Name                   Major
-0     Lesley   Cordero                     NaN
-0     Martin     Perez  Mechanical Engineering
-```
-This is because the indices weren't result when we did the merge. With a simple parameter change, we can fix this, however:
-
-``` python
-names = pd.concat([d1, d3],axis=0,ignore_index=True)
-```
-Notice the `ignore_index` being set to `True`.
-
-### 2.3 Challenge
+### 2.2 Challenge
 
 Recall Bayes Theorem, which provides a way of calculating the posterior probability. Its formula is as follows:
 
