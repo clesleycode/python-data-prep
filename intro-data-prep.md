@@ -51,7 +51,7 @@ Let's install the modules we'll need for this tutorial. Open up your terminal an
 ```
 pip3 install zipfile
 pip3 install os
-pip3 install pandas
+pip3 install pandas==0.20.1
 ```
 
 Next, to install the R packages, cd into your workspace, and enter the following, very simple, command into your bash: 
